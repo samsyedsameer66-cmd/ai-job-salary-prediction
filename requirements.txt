@@ -1,0 +1,8 @@
+mlflow
+optuna
+optuna-integration[mlflow]
+prefect
+streamlit
+scikit-learn
+pandas
+joblib
