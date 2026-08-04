@@ -7,10 +7,12 @@ orchestration flow, and a Streamlit prediction app.
 ## Live demo
 ```bash
 pip install -r requirements.txt
+
+# model.pkl isn't included in this repo (exceeds GitHub's file size limits) —
+# generate it locally first, then launch the app:
+python job_orchestration.py
 streamlit run app.py
 ```
-`model.pkl` is already trained and committed, so the app works immediately —
-no training step required first.
 
 ## Project structure
 
@@ -21,7 +23,6 @@ no training step required first.
 | `job_pipeline_tracking.py` | Baseline RandomForestRegressor + 50-trial Optuna sweep, logged to MLflow |
 | `job_pipeline_hpt.py` | Multi-model sweep (RandomForest / GradientBoosting / KNN), 20 Optuna trials each, nested MLflow runs |
 | `ai_job_dataset.csv` | Training data (15,000 rows) |
-| `model.pkl` | Trained pipeline (Preprocessor + RandomForestRegressor), Test R² ≈ 0.88 |
 | `mlflow.db` | SQLite MLflow backend store |
 | `requirements.txt` | Python dependencies |
 
@@ -34,6 +35,10 @@ Two engineered features not present in the raw CSV:
 **Numeric features:** `remote_ratio`, `years_experience`, `job_description_length`, `benefits_score`, `num_skills`, `days_to_deadline`
 **Categorical features (one-hot encoded):** `job_title`, `experience_level`, `employment_type`, `company_location`, `company_size`, `employee_residence`, `education_required`, `industry`
 
+> **Note:** `model.pkl` (the trained pipeline, Test R² ≈ 0.88) is not committed to this
+> repo — it exceeds GitHub's file-upload size limits. Run `python job_orchestration.py`
+> once to generate it locally before launching the app.
+
 `job_id`, `company_name`, `salary_currency`, `required_skills`, `posting_date`,
 `application_deadline` are dropped after being consumed for feature engineering.
 
@@ -45,10 +50,12 @@ mixed numeric/categorical inputs.
 ```bash
 pip install -r requirements.txt
 
-# App works immediately — model.pkl is already trained
+# Required first run — model.pkl isn't committed to the repo:
+python job_orchestration.py
+
 streamlit run app.py
 
-# To retrain (overwrites model.pkl):
+# To retrain later (overwrites model.pkl):
 python job_orchestration.py
 
 # To schedule daily retraining via Prefect instead of running once:
